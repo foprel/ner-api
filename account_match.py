@@ -3,7 +3,7 @@ from fuzzywuzzy import fuzz
 from nltk.tokenize import word_tokenize
 import re
 import nltk
-# nltk.download('punkt')
+nltk.download('punkt')
 
 
 def get_accounts(filename):
