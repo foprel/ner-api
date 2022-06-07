@@ -66,7 +66,7 @@ def account_name_client():
         abort(400)
 
     account_name_client = request.json.get("account_name_client")
-    account_name_client_norm = match(account_name_client, accounts, stopwords, u=95, keep_old_value=True)
+    account_name_client_norm = match(account_name_client, accounts, stopwords, u=80, keep_old_value=True)
 
     print(f"{account_name_client} --> {account_name_client_norm}")
 
