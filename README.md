@@ -10,12 +10,12 @@ cd ner-api
 ```
 
 ## Usage
-Set environment variables:
+Set NER-API environment variables:
 ```
-export SECRET_KEY=your_secret_key
-export USER_NAME=your_user_name
-export PASSWORD=your_password
-export IP_RANGES=your_ip_ranges
+SECRET_KEY=your_secret_key
+USERNAME=your_username
+PASSWORD=your_password
+IP_RANGES=your_ip_ranges
 ```
 
 Start NER-API:
@@ -25,16 +25,18 @@ flask run
 
 Login to NER-API :
 ```bash
-USERNAME=<YOUR_USERNAME>
-PASSWORD=<YOUR_PASSWORD>
-LOGIN=$(echo "${USERNAME}:${PASSWORD}" | base64)
-
-curl -H "Authorization:Basic ${LOGIN}"
+USERNAME=frank \
+PASSWORD=1234 \
+LOGIN=$(echo -n "$USERNAME:$PASSWORD" | base64) \
+TOKEN=$(curl -H "Authorization:Basic ${LOGIN}" "http://127.0.0.1:5000/login" | jq -r ".token") \
 ```
 
 Request entity match:
 ```bash
-Xyz
+curl -X POST "http://127.0.0.1:5000/api/named-entity-recognizer/" \
+-H "Content-Type: application/json" \
+-d '{"account_name_client":"entity_name"}' \
+-H "token: $TOKEN" \
 ```
 
 ## Acknowledgements
