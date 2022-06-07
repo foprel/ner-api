@@ -1,5 +1,7 @@
 # ner-api
 
+> :warning: **Security warning**: This project is experimental and provided as-is (see MIT license).
+
 ## Description
 An experiment with Named-Entity Recognition in Python using the Flask and FuzzyWuzzy libraries. Flask serves as an API which expects fuzzy entity names, which are compared against a list of valid entity names using FuzzyWuzzy.
 
