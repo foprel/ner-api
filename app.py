@@ -7,7 +7,7 @@ from functools import wraps
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
-app.config['USER_NAME'] = os.environ.get('USER_NAME')
+app.config['USERNAME'] = os.environ.get('USERNAME')
 app.config['PASSWORD'] = os.environ.get('PASSWORD')
 app.config['IP_RANGES'] = os.environ.get('IP_RANGES').split(",")
 
@@ -24,7 +24,7 @@ def validate_token(func):
             return jsonify({"message": "Token required!"}), 403
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'])
-        except Exception:
+        except Exception as e:
             return jsonify({"message": "Token is invalid!"}), 403
         return func(*args, **kwargs)
     return decorated
@@ -47,19 +47,19 @@ def validate_ip(func):
 
 @app.route('/login', methods=['GET'])
 def login():
-    print(app.config['USER_NAME'])
+    print(app.config['USERNAME'])
     print(app.config['PASSWORD'])
     auth = request.authorization
-    print(auth.password)
     print(auth.username)
-    if auth and auth.password == app.config['PASSWORD'] and auth.username == app.config['USER_NAME']:
+    print(auth.password)
+    if auth and auth.password == app.config['PASSWORD'] and auth.username == app.config['USERNAME']:
         token = jwt.encode({'user': auth.username, 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=365)}, app.config['SECRET_KEY'])
-        return jsonify({'token': token})
+        return jsonify({'token': token.decode('utf-8')})
 
     return make_response('Could not verify!', 401, {'WWW-Authenticate': 'Basic realm="Login required"'})
 
 
-@app.route('/api/account_name_client/', methods=['POST'])
+@app.route('/api/named-entity-recognizer/', methods=['POST'])
 @validate_token
 def account_name_client():
     if not request.json.get("account_name_client"):
