@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 app.config['USER_NAME'] = os.environ.get('USER_NAME')
 app.config['PASSWORD'] = os.environ.get('PASSWORD')
-app.config['IP_RANGES'] = os.environ.get('IP_RANGE') #.split(",")
+app.config['IP_RANGES'] = os.environ.get('IP_RANGES').split(",")
 
 filename = "entity_names.csv"
 accounts = get_accounts(filename)
@@ -47,10 +47,15 @@ def validate_ip(func):
 
 @app.route('/login', methods=['GET'])
 def login():
+    print(app.config['USER_NAME'])
+    print(app.config['PASSWORD'])
     auth = request.authorization
+    print(auth.password)
+    print(auth.username)
     if auth and auth.password == app.config['PASSWORD'] and auth.username == app.config['USER_NAME']:
         token = jwt.encode({'user': auth.username, 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=365)}, app.config['SECRET_KEY'])
-        return jsonify({'token': token.decode('UTF-8')})
+        return jsonify({'token': token})
+
     return make_response('Could not verify!', 401, {'WWW-Authenticate': 'Basic realm="Login required"'})
 
 
@@ -59,9 +64,12 @@ def login():
 def account_name_client():
     if not request.json.get("account_name_client"):
         abort(400)
+
     account_name_client = request.json.get("account_name_client")
     account_name_client_norm = match(account_name_client, accounts, stopwords, u=95, keep_old_value=True)
+
     print(f"{account_name_client} --> {account_name_client_norm}")
+
     return jsonify({
         "accountNameClient": account_name_client_norm
     })

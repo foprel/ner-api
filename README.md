@@ -24,12 +24,16 @@ flask run
 ```
 
 Login to NER-API :
-```
-Xyz
+```bash
+USERNAME=<YOUR_USERNAME>
+PASSWORD=<YOUR_PASSWORD>
+LOGIN=$(echo "${USERNAME}:${PASSWORD}" | base64)
+
+curl -H "Authorization:Basic ${LOGIN}"
 ```
 
 Request entity match:
-```
+```bash
 Xyz
 ```
 
